@@ -1,0 +1,23 @@
+{
+  "name": "automated-dupe-handler",
+  "version": "1.0.0",
+  "description": "Handle duplicated leads in marketo",
+  "main": "./build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "yarn run compile",
+    "pretest": "yarn run compile",
+    "posttest": "yarn run lint"
+  },
+  "author": "@peyssoa",
+  "license": "ISC",
+  "devDependencies": {
+    "gts": "^5.0.1",
+    "typescript": "^5.2.2",
+    "@types/node": "20.4.6"
+  }
+}
