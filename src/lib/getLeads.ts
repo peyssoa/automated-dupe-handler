@@ -204,7 +204,7 @@ export const getLeads = async (
   LEADS.push(...data.result);
 
   if (data.nextPageToken) {
-    console.log('There are more pages of leads to retrieve');
+    console.log('There are more leads to retrieve - getting another 300');
     // Recursive call to get the next page of leads
     await getLeads(accessToken, data.nextPageToken);
   }

@@ -471,6 +471,8 @@ export const mergeDuplicates = async (
         console.log('New token has been generated');
       }
     }
+
+    console.log("Process Complete");
   } catch (error) {
     console.error('mergeDuplicates: ', error);
   }
