@@ -1,6 +1,7 @@
 {
   "name": "automated-dupe-handler",
   "version": "1.0.0",
+  "author": "@peyssoa",
   "description": "Handle duplicated leads in marketo",
   "main": "./build/index.js",
   "scripts": {
@@ -13,7 +14,6 @@
     "pretest": "yarn run compile",
     "posttest": "yarn run lint"
   },
-  "author": "@peyssoa",
   "license": "ISC",
   "devDependencies": {
     "@types/dotenv": "^8.2.0",

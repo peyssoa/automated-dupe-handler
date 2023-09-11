@@ -106,5 +106,10 @@ export const selectWinningLead = (fieldList: IFieldList, final: IFieldList) => {
     }
   }
 
+  // if final list has no id, then we need to add one.
+  if (!finalList.id || finalList.id.length === 0) {
+    finalList.id = fieldList.id[0];
+  }
+
   return finalList;
 };

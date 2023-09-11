@@ -10,6 +10,7 @@ import {
 import {generateAccessToken} from './marketoAuth';
 import {selectWinningLead} from './selectWinningLeads';
 import {mergeLeads} from './mergeLeads';
+import {createUpdateLead} from './createUpdateLead';
 
 const LOG_FILE_NAME = new Date().toISOString();
 
@@ -347,24 +348,18 @@ export const mergeDuplicates = async (
 
   try {
     const listLength = duplicates.length;
-
+    
     if (!listLength) {
       throw new Error('No duplicates to merge');
     }
-
+    console.log('Number of duplicates to process: ', listLength);
     console.log('Beginning the duplicate handling process...');
 
     for (
       let duplicateIndex = 0;
-      duplicateIndex < 4;
-      // duplicateIndex < listLength;
+      duplicateIndex < listLength;
       duplicateIndex++
     ) {
-      // // 1. Make sure there is an active token
-      // const isTokenExpired = isTokenExpiredOrAboutToExpire(token.tokenExpiry);
-      // if (isTokenExpired) {
-      //   accessToken = await generateAccessToken();
-      // }
 
       // 2. Reset the fieldList and finalList
       fieldList = resetFieldValues(fieldList);
@@ -417,7 +412,47 @@ export const mergeDuplicates = async (
       logFile.write(JSON.stringify(res));
       logFile.write('\n\n');
 
-      logFile.end();
+      if (res.some((response) => (response && response.success === false))) {
+        logFile.write('Error merging leads:\n');
+        logFile.write(
+          '---------------------------------------------------------------------------------------\n\n'
+        );
+        logFile.write('\n\n');
+        logFile.end();
+      } else {
+        const createUpdateLeadResponse = await createUpdateLead(
+          finalList,
+          accessToken.accessToken
+        );
+        logFile.write('Updating Response:\n');
+        logFile.write(JSON.stringify(createUpdateLeadResponse));
+        logFile.write('\n\n');
+        let n = 0;
+
+        while (
+          createUpdateLeadResponse.success === 'skipped' &&
+          n < loserIds.length
+        ) {
+          // do more
+          finalList['id'] = loserIds[n];
+          logFile.write(finalList);
+          logFile.write('\n\n');
+          const res = await createUpdateLead(
+            finalList,
+            accessToken.accessToken
+          );
+          logFile.write('Updating Skipped Response:\n');
+          logFile.write(JSON.stringify(res));
+          logFile.write('\n\n');
+          n = n + 1;
+        }
+        logFile.write('Successfully merged leads:\n');
+        logFile.write(
+          '---------------------------------------------------------------------------------------\n\n'
+        );
+        logFile.write('\n\n');
+        logFile.end();
+      }
 
       // 8. Check for the token again
       if (

@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from 'axios';
+import axios from 'axios';
 import {IFieldList} from '../interfaces';
 
 export const mergeLeads = async (
@@ -16,21 +16,22 @@ export const mergeLeads = async (
     Authorization: `Bearer ${accessToken}`,
   };
 
-  const response: Promise<AxiosResponse<any, any> | null>[] = loserIds.map(
-    id => {
-      const url = `${baseUrl}/rest/v1/leads/${winnerId}/merge.json?leadId=${id}&mergeInCRM=${mergeInCRM}`;
-      return axios
-        .post(url, {}, {headers})
-        .then(response => {
-          const parsedResponse = response.data;
-          return parsedResponse;
-        })
-        .catch(error => {
-          console.error(`Error merging leadId ${id}:`, error);
-          return null; // or some error value to identify failed requests
-        });
-    }
-  );
+  const response = loserIds.map(id => {
+    const url = `${baseUrl}rest/v1/leads/${winnerId}/merge.json?leadId=${id}&mergeInCRM=${mergeInCRM}`;
+
+    return axios
+      .post(url, {}, {headers})
+      .then(response => {
+        const parsedResponse = response.data;
+        return parsedResponse;
+      })
+      .catch(error => {
+        console.error(`Error merging leadId ${id}:`, error);
+        return {
+          success: false,
+        }; // or some error value to identify failed requests
+      });
+  });
 
   const results = await Promise.all(response);
   return results;

@@ -42,7 +42,7 @@ const checkForNumbers = (value: any) => {
     return value;
   }
 
-  return value.toLowerCase();
+  return typeof value === 'string' ? value.toLowerCase() : value;
 };
 
 const notNull = (list: any[]) => {
